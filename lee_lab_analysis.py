@@ -9,6 +9,8 @@ import pathSetter;
 import argparse;
 import util;
 import fileProcessing as fp;
+import random;
+import stats;
 
 #Next:
 #Extract the values from the gene dictionary
@@ -21,16 +23,6 @@ import fileProcessing as fp;
 #
 
 
-#write functions to:
-# filter out all values where score was 0.
-# sort by a given score
-# take average of top n of a particular score in an array
-# randomly sample n scores from array m times and generate the values of the distribution.
-# compare a threshold to the values from a distribution to form a 'z' score, maybe also plot.
-# copy top n of a particular score into an array (for wilcoxon comparison).
-# wilcoxon comparison.
-
-#...and that should cover it, kindof...
 
 CONFIG_ATTR = util.enum(
     INPUT_FILE = 'inputFile'
@@ -54,6 +46,12 @@ PVAL_FOLD_CHANGE_PAIRS_ATTR = util.enum(
     , PVAL_IS_LOG = 'pvalIsLog' #default to false
     , FC_IS_LOG = 'fcIsLog' #default to true
 );
+SCORE_NAMES = util.enum(
+    MATURATION_SCORE = "maturationScore"
+    ,D7_V_SHAM_SCORE = "d7RvsShamScore"
+    ,DEDIFF_SCORE = "dediffScore"
+    ,ESC_DIFF_SCORE = "escDiffScore" 
+);
 
 
 def main():
@@ -61,7 +59,85 @@ def main():
     parser.add_argument("--inputConfigs", nargs="+", required=True);
     args = parser.parse_args();
     
-    processInput(args);    
+    genes = processInput(args).values();
+
+    numGenesToAverage = 500;
+    numIterations = 10000;
+
+    genes = filterOutZeros(genes, SCORE_NAMES.ESC_DIFF_SCORE);
+    monteCarloDist = getMonteCarloDist(genes,SCORE_NAMES.ESC_DIFF_SCORE, numGenesToAverage, numIterations);
+    score = twoScoreComparison(
+        genes=genes
+        , scoreToCompare=SCORE_NAMES.D7_V_SHAM_SCORE
+        , reverseScoreToCompareOrder=False
+        , scoreToCompareTo=SCORE_NAMES.ESC_DIFF_SCORE
+        , numToAverage=numGenesToAverage
+        , monteCarloDistribution=monteCarloDist
+        , greaterThanThreshold=False);
+    print score;
+
+def getMonteCarloDist(genes,scoreName,numGenesToSample,numIterations):
+    monteCarloDist = monteCarloDistribution(genes, scoreName, numGenesToSample, numIterations);
+    return monteCarloDist;
+
+def twoScoreComparison(
+    genes
+    , scoreToCompare
+    , scoreToCompareTo
+    , numToAverage
+    , monteCarloDistribution
+    , reverseScoreToCompareOrder=False
+    , greaterThanThreshold=True
+    ):
+    genes = filterOutZeros(genes, scoreToCompareTo);
+    genes = sortByScore(genes, scoreToCompare, reverseScoreToCompareOrder);
+    threshold = averageTopN(genes, scoreToCompareTo, numToAverage);
+    zScore = getZscore(monteCarloDistribution,threshold);
+    proportionGreaterThan = getProportionComparedTo(monteCarloDistribution, threshold, greaterThanThreshold);
+    return stats.TestResult(proportionGreaterThan, "Monte carlo with "+str(len(monteCarloDistribution))+" samples",testStatistic=zScore);  
+ 
+def filterOutZeros(genes, scoreName):
+    return [x for x in genes if x.getAttribute(scoreName) != 0];
+
+def sortByScore(genes, scoreName, reverse=False):
+    genes.sort(reverse=reverse,key=lambda x: x.getAttribute(scoreName));
+    return genes;
+
+def averageTopN(genes, scoreName, numToAverage):
+    theSum = 0;
+    for i in range(numToAverage):
+        theSum += genes[i].getAttribute(scoreName);
+    return float(theSum)/numToAverage;
+
+def monteCarloDistribution(genes,scoreName, numGenesToSample, numIterations):
+    def monteCarloAction():
+        sample = random.sample(genes, numGenesToSample);
+        return averageTopN(sample, scoreName, numGenesToSample);
+    return stats.monteCarlo(monteCarloAction, numIterations);
+
+def getZscore(arr, val):
+    avg = stats.mean(arr);
+    sdev = stats.sdev(arr);
+    return float(val - avg)/sdev;
+
+def getProportionComparedTo(arr, val, greaterThan=True):
+    numGE = 0;
+    for elem in arr:
+        if ((greaterThan and elem >= val) or ((greaterThan == False) and elem <= val)):
+            numGE += 1;
+    return float(numGE)/len(arr);
+
+
+#write functions to:
+# filter out all values where score was 0.
+# sort by a given score
+# take average of top n of a particular score in an array
+# randomly sample n scores from array m times and generate the values of the distribution.
+# compare a threshold to the values from a distribution to form a 'z' score, maybe also plot.
+# copy top n of a particular score into an array (for wilcoxon comparison).
+# wilcoxon comparison.
+
+#...and that should cover it, kindof...
 
 def processInput(args):
     geneDictionary = {};
