@@ -1,0 +1,91 @@
+{
+    "inputFile": "dedifferentiationSamples_RSEM.tsv"
+    ,"geneIdColumn":"ENSEMBLID"
+    ,"valueColumnsToStore": [
+        {
+            "columnName": "GeneID"
+            ,"valueName": "HugoGeneId"
+        }, {
+            "columnName": "Adult_CM_24h_minus_Adult_CM_0h_log2FC"
+            ,"valueName": "logFC_24h_0h"
+            ,"type": "float"
+        }, {
+            "columnName": "Adult_CM_24h_minus_Adult_CM_0h_pvalue"
+            ,"valueName": "PValue_24h_0h"
+            ,"type": "float"
+        }, {
+            "columnName": "Adult_CM_48h_minus_Adult_CM_0h_log2FC"
+            ,"valueName": "logFC_48h_0h"
+            ,"type": "float"
+        }, {
+            "columnName": "Adult_CM_48h_minus_Adult_CM_0h_pvalue"
+            ,"valueName": "PValue_48h_0h"
+            ,"type": "float"
+        }, {
+            "columnName": "Adult_CM_48h_minus_Adult_CM_24h_log2FC"
+            ,"valueName": "logFC_48h_24h"
+            ,"type": "float"
+        }, {
+            "columnName": "Adult_CM_48h_minus_Adult_CM_24h_pvalue"
+            ,"valueName": "PValue_48h_24h"
+            ,"type": "float"
+        }, {
+            "columnName": "Adult_CM_72h_minus_Adult_CM_0h_log2FC"
+            ,"valueName": "logFC_72h_0h"
+            ,"type": "float"
+        }, {
+            "columnName": "Adult_CM_72h_minus_Adult_CM_0h_pvalue"
+            ,"valueName": "PValue_72h_0h"
+            ,"type": "float"
+        }, {
+            "columnName": "Adult_CM_72h_minus_Adult_CM_24h_log2FC"
+            ,"valueName": "logFC_72h_24h"
+            ,"type": "float"
+        }, {
+            "columnName": "Adult_CM_72h_minus_Adult_CM_24h_pvalue"
+            ,"valueName": "PValue_72h_24h"
+            ,"type": "float"
+        }, {
+            "columnName": "Adult_CM_72h_minus_Adult_CM_48h_log2FC"
+            ,"valueName": "logFC_72h_48h"
+            ,"type": "float"
+        }, {
+            "columnName": "Adult_CM_72h_minus_Adult_CM_48h_pvalue"
+            ,"valueName": "PValue_72h_48h"
+            ,"type": "float"
+        }
+    ], "signedLogPvalMetascores": [
+        {
+            "scoreName": "dediffScore"
+            , "pvalFoldChangePairs": [
+                {
+                    "pvalName": "PValue_24h_0h"
+                    ,"fcColName": "logFC_24h_0h"
+                    ,"invertSign": true
+                }, {
+                    "pvalName": "PValue_48h_0h"
+                    ,"fcColName": "logFC_48h_0h"
+                    ,"invertSign": true
+                }, {
+                    "pvalName": "PValue_72h_0h"
+                    ,"fcColName": "logFC_72h_0h"
+                    ,"invertSign": true
+                }, {
+                    "pvalName": "PValue_48h_24h"
+                    , "fcColName": "logFC_48h_24h"
+                    , "invertSign": true
+                }, {
+                    "pvalName": "PValue_72h_24h"
+                    , "fcColName": "logFC_72h_24h"
+                    , "invertSign": true
+                }, {
+                    "pvalName": "PValue_72h_48h"
+                    , "fcColName": "logFC_72h_48h"
+                    , "invertSign": true
+                }
+            ]
+        }
+    ] 
+}
+
+

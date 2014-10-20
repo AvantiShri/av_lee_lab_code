@@ -1,0 +1,86 @@
+{
+    "inputFile": "escDiffSamples_RSEM.tsv"
+    ,"geneIdColumn":"ENSEMBLID"
+    ,"valueColumnsToStore": [
+        {
+            "columnName": "GeneID"
+            ,"valueName": "HugoGeneId"
+        }, {
+            "columnName": "CP_minus_CM_log2FC"
+            ,"valueName": "logFC_CP_CM"
+            ,"type": "float"
+        }, {
+            "columnName": "CP_minus_CM_pvalue"
+            ,"valueName": "PValue_CP_CM"
+            ,"type": "float"
+        }, {
+            "columnName": "ESC_minus_CM_log2FC"
+            ,"valueName": "logFC_ESC_CM"
+            ,"type": "float"
+        }, {
+            "columnName": "ESC_minus_CM_pvalue"
+            ,"valueName": "PValue_ESC_CM"
+            ,"type": "float"
+        }, {
+            "columnName": "ESC_minus_CP_log2FC"
+            ,"valueName": "logFC_ESC_CP"
+            ,"type": "float"
+        }, {
+            "columnName": "ESC_minus_CP_pvalue"
+            ,"valueName": "PValue_ESC_CP"
+            ,"type": "float"
+        }, {
+            "columnName": "MES_minus_CM_log2FC"
+            ,"valueName": "logFC_MES_CM"
+            ,"type": "float"
+        }, {
+            "columnName": "MES_minus_CM_pvalue"
+            ,"valueName": "PValue_MES_CM"
+            ,"type": "float"
+        }, {
+            "columnName": "MES_minus_CP_log2FC"
+            ,"valueName": "logFC_MES_CP"
+            ,"type": "float"
+        }, {
+            "columnName": "MES_minus_CP_pvalue"
+            ,"valueName": "PValue_MES_CP"
+            ,"type": "float"
+        }, {
+            "columnName": "MES_minus_ESC_log2FC"
+            ,"valueName": "logFC_MES_ESC"
+            ,"type": "float"
+        }, {
+            "columnName": "MES_minus_ESC_pvalue"
+            ,"valueName": "PValue_MES_ESC"
+            ,"type": "float"
+        }
+    ], "signedLogPvalMetascores": [
+        {
+            "scoreName": "escDiffScore"
+            , "pvalFoldChangePairs": [
+                {
+                    "pvalName": "PValue_MES_ESC"
+                    ,"fcColName": "logFC_MES_ESC"
+                    ,"invertSign": true
+                }, {
+                    "pvalName": "PValue_ESC_CP"
+                    ,"fcColName": "logFC_ESC_CP"
+                }, {
+                    "pvalName": "PValue_ESC_CM"
+                    ,"fcColName": "logFC_ESC_CM"
+                }, {
+                    "pvalName": "PValue_MES_CP"
+                    , "fcColName": "logFC_MES_CP"
+                }, {
+                    "pvalName": "PValue_MES_CM"
+                    , "fcColName": "logFC_MES_CM"
+                }, {
+                    "pvalName": "PValue_CP_CM"
+                    , "fcColName": "logFC_CP_CM"
+                }
+            ]
+        }
+    ] 
+}
+
+
