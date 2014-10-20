@@ -57,21 +57,27 @@
                 {
                     "pvalName": "PValue_P0_P4"
                     ,"fcColName": "logFC_P0_P4"
+                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_P0_P7"
                     ,"fcColName": "logFC_P0_P7"
+                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_P0_Adult"
                     ,"fcColName": "logFC_P0_Adult"
+                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_P4_P7"
                     , "fcColName": "logFC_P4_P7"
+                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_P4_Adult"
                     , "fcColName": "logFC_P4_Adult"
+                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_P7_Adult"
                     , "fcColName": "logFC_P7_Adult"
+                    ,"invertSign": true
                 }
             ]
         }, {

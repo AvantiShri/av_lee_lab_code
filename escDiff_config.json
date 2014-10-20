@@ -61,22 +61,27 @@
                 {
                     "pvalName": "PValue_MES_ESC"
                     ,"fcColName": "logFC_MES_ESC"
-                    ,"invertSign": true
+                    ,"invertSign": false
                 }, {
                     "pvalName": "PValue_ESC_CP"
                     ,"fcColName": "logFC_ESC_CP"
+                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_ESC_CM"
                     ,"fcColName": "logFC_ESC_CM"
+                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_MES_CP"
                     , "fcColName": "logFC_MES_CP"
+                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_MES_CM"
                     , "fcColName": "logFC_MES_CM"
+                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_CP_CM"
                     , "fcColName": "logFC_CP_CM"
+                    ,"invertSign": true
                 }
             ]
         }

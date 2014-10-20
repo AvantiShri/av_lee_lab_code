@@ -61,27 +61,21 @@
                 {
                     "pvalName": "PValue_24h_0h"
                     ,"fcColName": "logFC_24h_0h"
-                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_48h_0h"
                     ,"fcColName": "logFC_48h_0h"
-                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_72h_0h"
                     ,"fcColName": "logFC_72h_0h"
-                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_48h_24h"
                     , "fcColName": "logFC_48h_24h"
-                    , "invertSign": true
                 }, {
                     "pvalName": "PValue_72h_24h"
                     , "fcColName": "logFC_72h_24h"
-                    , "invertSign": true
                 }, {
                     "pvalName": "PValue_72h_48h"
                     , "fcColName": "logFC_72h_48h"
-                    , "invertSign": true
                 }
             ]
         }

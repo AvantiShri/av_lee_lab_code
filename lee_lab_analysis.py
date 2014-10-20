@@ -11,6 +11,8 @@ import util;
 import fileProcessing as fp;
 import random;
 import stats;
+import matplotlib.pyplot as plt;
+import numpy as np;
 
 #Next:
 #Extract the values from the gene dictionary
@@ -64,38 +66,71 @@ def main():
     numGenesToAverage = 500;
     numIterations = 10000;
 
-    genes = filterOutZeros(genes, SCORE_NAMES.ESC_DIFF_SCORE);
-    monteCarloDist = getMonteCarloDist(genes,SCORE_NAMES.ESC_DIFF_SCORE, numGenesToAverage, numIterations);
-    score = twoScoreComparison(
-        genes=genes
-        , scoreToCompare=SCORE_NAMES.D7_V_SHAM_SCORE
-        , reverseScoreToCompareOrder=False
-        , scoreToCompareTo=SCORE_NAMES.ESC_DIFF_SCORE
-        , numToAverage=numGenesToAverage
-        , monteCarloDistribution=monteCarloDist
-        , greaterThanThreshold=False);
-    print score;
+    compareToScore(genes, SCORE_NAMES.ESC_DIFF_SCORE
+        , [Settings(scoreToCompare=SCORE_NAMES.D7_V_SHAM_SCORE, reverseScoreToCompareOrder=True, greaterThanThreshold=False)]
+        , numGenesToAverage, numIterations);
+    
+    compareToScore(genes, SCORE_NAMES.MATURATION_SCORE
+        , [Settings(scoreToCompare=SCORE_NAMES.DEDIFF_SCORE, reverseScoreToCompareOrder=True, greaterThanThreshold=False)]
+        , numGenesToAverage, numIterations);
+
+
+class Settings(object):
+    def __init__(self, scoreToCompare, reverseScoreToCompareOrder, greaterThanThreshold):
+        self.scoreToCompare = scoreToCompare;
+        self.reverseScoreToCompareOrder = reverseScoreToCompareOrder;
+        self.greaterThanThreshold = greaterThanThreshold;
+
+def compareToScore(genes, scoreToCompareTo, settings, numGenesToAverage, numIterations):
+    (genes, monteCarloDist) = filterAndMonteCarlo(genes, scoreToCompareTo, numGenesToAverage, numIterations);
+    for setting in settings:
+        score = twoScoreComparison(
+            genes = genes
+            , scoreToCompare=setting.scoreToCompare
+            , reverseScoreToCompareOrder=setting.reverseScoreToCompareOrder
+            , scoreToCompareTo=scoreToCompareTo
+            , numToAverage = numGenesToAverage
+            , monteCarloDistribution = monteCarloDist
+            , greaterThanThreshold = setting.greaterThanThreshold
+            );    
+    
+
+def filterAndMonteCarlo(genes, scoreName, numGenesToAverage, numIterations):
+    genes = filterOutZeros(genes, scoreName);
+    monteCarloDist = getMonteCarloDist(genes, scoreName, numGenesToAverage, numIterations);
+    return (genes, monteCarloDist);
+    
 
 def getMonteCarloDist(genes,scoreName,numGenesToSample,numIterations):
     monteCarloDist = monteCarloDistribution(genes, scoreName, numGenesToSample, numIterations);
     return monteCarloDist;
 
 def twoScoreComparison(
-    genes
-    , scoreToCompare
-    , scoreToCompareTo
-    , numToAverage
-    , monteCarloDistribution
-    , reverseScoreToCompareOrder=False
-    , greaterThanThreshold=True
+            genes
+            , scoreToCompare
+            , scoreToCompareTo
+            , numToAverage
+            , monteCarloDistribution
+            , reverseScoreToCompareOrder=False
+            , greaterThanThreshold=True
     ):
     genes = filterOutZeros(genes, scoreToCompareTo);
     genes = sortByScore(genes, scoreToCompare, reverseScoreToCompareOrder);
     threshold = averageTopN(genes, scoreToCompareTo, numToAverage);
     zScore = getZscore(monteCarloDistribution,threshold);
     proportionGreaterThan = getProportionComparedTo(monteCarloDistribution, threshold, greaterThanThreshold);
-    return stats.TestResult(proportionGreaterThan, "Monte carlo with "+str(len(monteCarloDistribution))+" samples",testStatistic=zScore);  
+    
+    fileName = scoreToCompare+"_vs_"+scoreToCompareTo+"_"+("descen" if reverseScoreToCompareOrder else "ascen");
  
+    score = stats.TestResult(proportionGreaterThan, "Monte carlo with "+str(len(monteCarloDistribution))+" samples",testStatistic=zScore);  
+    print fileName+" "+str(score);    
+    plt.hist(monteCarloDistribution, bins=np.linspace(min(monteCarloDistribution),max(monteCarloDistribution),100));
+    plt.plot([threshold,threshold],[0,100]);
+    #plt.show();
+    plt.savefig(fileName+".svg");
+    plt.savefig(fileName+".png");
+    plt.close("all");
+
 def filterOutZeros(genes, scoreName):
     return [x for x in genes if x.getAttribute(scoreName) != 0];
 
