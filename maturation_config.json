@@ -1,0 +1,89 @@
+{
+    "inputFile": "maturationSamples_RSEM.tsv"
+    ,"geneIdColumn":"ENSID"
+    ,"valueColumnsToStore": [
+        {
+            "columnName": "GeneID"
+            ,"valueName": "HugoGeneId"
+        }, {
+            "columnName": "logFC_P0_P4"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_P0_P4"
+            ,"type": "float"
+        }, {
+            "columnName": "logFC_P0_P7"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_P0_P7"
+            ,"type": "float"
+        }, {
+            "columnName": "logFC_P0_Adult"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_P0_Adult"
+            ,"type": "float"
+        }, {
+            "columnName": "logFC_P4_P7"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_P4_P7"
+            ,"type": "float"
+        }, {
+            "columnName": "logFC_P4_Adult"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_P4_Adult"
+            ,"type": "float"
+        }, {
+            "columnName": "logFC_P7_Adult"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_P7_Adult"
+            ,"type": "float"
+        }, {
+            "columnName": "logFC_D7R/D7S"
+            , "valueName": "logFC_D7R_D7S"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_D7R/D7S"
+            , "valueName": "PValue_D7R_D7S"
+            , "type": "float"
+        }
+    ], "signedLogPvalMetascores": [
+        {
+            "scoreName": "maturationScore"
+            , "pvalFoldChangePairs": [
+                {
+                    "pvalName": "PValue_P0_P4"
+                    ,"fcColName": "logFC_P0_P4"
+                }, {
+                    "pvalName": "PValue_P0_P7"
+                    ,"fcColName": "logFC_P0_P7"
+                }, {
+                    "pvalName": "PValue_P0_Adult"
+                    ,"fcColName": "logFC_P0_Adult"
+                }, {
+                    "pvalName": "PValue_P4_P7"
+                    , "fcColName": "logFC_P4_P7"
+                }, {
+                    "pvalName": "PValue_P4_Adult"
+                    , "fcColName": "logFC_P4_Adult"
+                }, {
+                    "pvalName": "PValue_P7_Adult"
+                    , "fcColName": "logFC_P7_Adult"
+                }
+            ]
+        }, {
+            "scoreName": "d7RvsShamScore"
+            , "pvalFoldChangePairs": [
+                {
+                    "pvalName": "PValue_D7R_D7S"
+                    , "fcColName": "logFC_D7R_D7S"
+                }
+            ]
+        } 
+    ] 
+}
+
+
