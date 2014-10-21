@@ -13,6 +13,8 @@ import random;
 import stats;
 import matplotlib.pyplot as plt;
 import numpy as np;
+import math;
+from scipy.stats import shapiro;
 
 #Next:
 #Extract the values from the gene dictionary
@@ -24,18 +26,23 @@ import numpy as np;
 #sort by d7 score
 #
 
-
-
 CONFIG_ATTR = util.enum(
     INPUT_FILE = 'inputFile'
     , VALUE_COLUMNS_TO_STORE = 'valueColumnsToStore'
-    , SIGNED_LOG_PVAL_METASCORES = 'signedLogPvalMetascores'
     , GENE_ID_COLUMN = 'geneIdColumn'
+    , FILE_TYPE = 'fileType'
+    , SAMPLE1COL = 'sample_1'
+    , SAMPLE2COL = 'sample_2'
+    , RENAMINGS = 'renamings' 
     );
+METASCORES_ATTR = util.enum(
+    SIGNED_LOG_PVAL_METASCORES = 'signedLogPvalMetascores'
+);
 VALUE_COLUMNS_TO_STORE_ATTR = util.enum(
     VALUE_NAME = 'valueName'
     , COLUMN_NAME = 'columnName'
     , TYPE = 'type'
+    , FLIP_SIGN_ON_INVERT = 'flipSignOnInvert' 
 );
 SIGNED_LOG_PVAL_METASCORES_ATTR = util.enum(
     SCORE_NAME = 'scoreName'
@@ -50,43 +57,73 @@ PVAL_FOLD_CHANGE_PAIRS_ATTR = util.enum(
 );
 SCORE_NAMES = util.enum(
     MATURATION_SCORE = "maturationScore"
+    ,P0P4P7_SCORE = "P0P4P7Score"
+    ,P0_V_P7_SCORE = "P0vsP7Score"
+    ,P0_V_ADULT_SCORE = "P0vsAdultScore"
+    ,P7_V_ADULT_SCORE = "P7vsAdultScore"
     ,D7_V_SHAM_SCORE = "d7RvsShamScore"
     ,DEDIFF_SCORE = "dediffScore"
-    ,ESC_DIFF_SCORE = "escDiffScore" 
+    ,ESC_DIFF_SCORE = "escDiffScore"
+    ,ESC_V_CP = "ESCvsCP"
+    ,ESC_V_CM = "ESCvsCM" 
 );
 
+zeroPvalSubstitute = 10**-250;
 
 def main():
     parser = argparse.ArgumentParser(description="read in the lee lab files in preparation for statistical tests");
     parser.add_argument("--inputConfigs", nargs="+", required=True);
+    parser.add_argument("--metascoresConfig", required=True);
+    parser.add_argument("--prefix",required=True);
     args = parser.parse_args();
     
     genes = processInput(args).values();
 
-    numGenesToAverage = 500;
+    numGenesToAverage = 200;
     numIterations = 10000;
 
-    compareToScore(genes, SCORE_NAMES.ESC_DIFF_SCORE
-        , [Settings(scoreToCompare=SCORE_NAMES.D7_V_SHAM_SCORE, reverseScoreToCompareOrder=True, greaterThanThreshold=False)]
-        , numGenesToAverage, numIterations);
-    
-    compareToScore(genes, SCORE_NAMES.MATURATION_SCORE
-        , [Settings(scoreToCompare=SCORE_NAMES.DEDIFF_SCORE, reverseScoreToCompareOrder=True, greaterThanThreshold=False)]
-        , numGenesToAverage, numIterations);
+    d7vShamSettings = Settings(SCORE_NAMES.D7_V_SHAM_SCORE, args.prefix, 
+                [Setting(reverseScoreToCompareOrder=True, greaterThanThreshold=False)
+                , Setting(reverseScoreToCompareOrder=False, greaterThanThreshold=True)]);
 
+    outputFile = args.prefix+"_scores.tsv";
+    scoresToPrint = [SCORE_NAMES.D7_V_SHAM_SCORE, SCORE_NAMES.ESC_DIFF_SCORE, SCORE_NAMES.P0P4P7_SCORE, SCORE_NAMES.MATURATION_SCORE, SCORE_NAMES.DEDIFF_SCORE]
+    for score in scoresToPrint:
+        computePercentiles(genes,score);
+    util.printAttributes(genes, scoresToPrint+[x+"_perc" for x in scoresToPrint], outputFile);
+    
+    scoresToTestWith = [SCORE_NAMES.P0P4P7_SCORE, SCORE_NAMES.MATURATION_SCORE, SCORE_NAMES.ESC_DIFF_SCORE, SCORE_NAMES.DEDIFF_SCORE];
+    scoresToTestWith =  scoresToTestWith+[x+"_perc" for x in scoresToTestWith];
+    for scoreToTestWith in scoresToTestWith:
+        compareToScore(genes, scoreToTestWith, d7vShamSettings, numGenesToAverage, numIterations);
+
+
+def computePercentiles(genes, scoreName):
+    genes = sortByScore(genes, scoreName);
+    i = 0;
+    while i < len(genes):
+        genes[i].addAttribute(scoreName+"_perc", (100*float(i+1))/len(genes));
+        i += 1;
 
 class Settings(object):
-    def __init__(self, scoreToCompare, reverseScoreToCompareOrder, greaterThanThreshold):
+    def __init__(self, scoreToCompare, prefix, settingsArr):
         self.scoreToCompare = scoreToCompare;
+        self.prefix = prefix;
+        self.settingsArr = settingsArr;
+
+class Setting(object):
+    def __init__(self, reverseScoreToCompareOrder, greaterThanThreshold):
         self.reverseScoreToCompareOrder = reverseScoreToCompareOrder;
         self.greaterThanThreshold = greaterThanThreshold;
 
 def compareToScore(genes, scoreToCompareTo, settings, numGenesToAverage, numIterations):
-    (genes, monteCarloDist) = filterAndMonteCarlo(genes, scoreToCompareTo, numGenesToAverage, numIterations);
-    for setting in settings:
+    (genes, monteCarloDist) = filterAndMonteCarlo(genes, scoreToCompareTo, settings.scoreToCompare, numGenesToAverage, numIterations);
+    #print shapiro(monteCarloDist);
+    for setting in settings.settingsArr:
         score = twoScoreComparison(
-            genes = genes
-            , scoreToCompare=setting.scoreToCompare
+            genes
+            , settings.prefix
+            , scoreToCompare=settings.scoreToCompare
             , reverseScoreToCompareOrder=setting.reverseScoreToCompareOrder
             , scoreToCompareTo=scoreToCompareTo
             , numToAverage = numGenesToAverage
@@ -95,8 +132,8 @@ def compareToScore(genes, scoreToCompareTo, settings, numGenesToAverage, numIter
             );    
     
 
-def filterAndMonteCarlo(genes, scoreName, numGenesToAverage, numIterations):
-    genes = filterOutZeros(genes, scoreName);
+def filterAndMonteCarlo(genes, scoreName, scoreToFilterZeros, numGenesToAverage, numIterations):
+    genes = filterOutZeros(genes, scoreToFilterZeros);
     monteCarloDist = getMonteCarloDist(genes, scoreName, numGenesToAverage, numIterations);
     return (genes, monteCarloDist);
     
@@ -107,6 +144,7 @@ def getMonteCarloDist(genes,scoreName,numGenesToSample,numIterations):
 
 def twoScoreComparison(
             genes
+            , prefix
             , scoreToCompare
             , scoreToCompareTo
             , numToAverage
@@ -116,20 +154,20 @@ def twoScoreComparison(
     ):
     genes = filterOutZeros(genes, scoreToCompareTo);
     genes = sortByScore(genes, scoreToCompare, reverseScoreToCompareOrder);
-    threshold = averageTopN(genes, scoreToCompareTo, numToAverage);
+    threshold = medianTopN(genes, scoreToCompareTo, numToAverage);
     zScore = getZscore(monteCarloDistribution,threshold);
     proportionGreaterThan = getProportionComparedTo(monteCarloDistribution, threshold, greaterThanThreshold);
     
-    fileName = scoreToCompare+"_vs_"+scoreToCompareTo+"_"+("descen" if reverseScoreToCompareOrder else "ascen");
+    fileName = prefix+"_"+scoreToCompare+"_vs_"+scoreToCompareTo+"_"+("descen" if reverseScoreToCompareOrder else "ascen");
  
-    score = stats.TestResult(proportionGreaterThan, "Monte carlo with "+str(len(monteCarloDistribution))+" samples",testStatistic=zScore);  
-    print fileName+" "+str(score);    
+    score = stats.TestResult(proportionGreaterThan, "Monte carlo with "+str(len(monteCarloDistribution))+" samples",testStatistic=zScore, testContext="threshold: "+str(threshold));  
     plt.hist(monteCarloDistribution, bins=np.linspace(min(monteCarloDistribution),max(monteCarloDistribution),100));
-    plt.plot([threshold,threshold],[0,100]);
+    plt.plot([threshold,threshold],[0,1000]);
     #plt.show();
     plt.savefig(fileName+".svg");
     plt.savefig(fileName+".png");
     plt.close("all");
+    print fileName+": "+str(score);
 
 def filterOutZeros(genes, scoreName):
     return [x for x in genes if x.getAttribute(scoreName) != 0];
@@ -138,16 +176,13 @@ def sortByScore(genes, scoreName, reverse=False):
     genes.sort(reverse=reverse,key=lambda x: x.getAttribute(scoreName));
     return genes;
 
-def averageTopN(genes, scoreName, numToAverage):
-    theSum = 0;
-    for i in range(numToAverage):
-        theSum += genes[i].getAttribute(scoreName);
-    return float(theSum)/numToAverage;
+def medianTopN(genes, scoreName, numToGetMedOf):
+    return np.median([x.getAttribute(scoreName) for x in genes[0:numToGetMedOf]]);
 
 def monteCarloDistribution(genes,scoreName, numGenesToSample, numIterations):
     def monteCarloAction():
         sample = random.sample(genes, numGenesToSample);
-        return averageTopN(sample, scoreName, numGenesToSample);
+        return medianTopN(sample, scoreName, numGenesToSample);
     return stats.monteCarlo(monteCarloAction, numIterations);
 
 def getZscore(arr, val):
@@ -179,42 +214,38 @@ def processInput(args):
     for inputConfig in args.inputConfigs:
         configJson = util.parseJsonFile(inputConfig);
         inputFile = configJson[CONFIG_ATTR.INPUT_FILE];
+        fileType = configJson[CONFIG_ATTR.FILE_TYPE] if CONFIG_ATTR.FILE_TYPE in configJson else "default";
         geneIdColumn = configJson[CONFIG_ATTR.GENE_ID_COLUMN];    
         valueColumnsToStore = configJson[CONFIG_ATTR.VALUE_COLUMNS_TO_STORE];
-        signedLogPvalMetascores = configJson[CONFIG_ATTR.SIGNED_LOG_PVAL_METASCORES];
-
         def actionOnDictionary(inp):
             geneId = inp[geneIdColumn];
             if geneId not in geneDictionary:
                 geneDictionary[geneId] = util.Entity(geneId);
             theGene = geneDictionary[geneId];
-            for valueColumnToStore in valueColumnsToStore:
-                theType = valueColumnToStore[VALUE_COLUMNS_TO_STORE_ATTR.TYPE] if VALUE_COLUMNS_TO_STORE_ATTR.TYPE in valueColumnToStore else None;
-                columnName = valueColumnToStore[VALUE_COLUMNS_TO_STORE_ATTR.COLUMN_NAME];
-                theVal = inp[columnName];
-                valueName = valueColumnToStore[VALUE_COLUMNS_TO_STORE_ATTR.VALUE_NAME] if VALUE_COLUMNS_TO_STORE_ATTR.VALUE_NAME in valueColumnToStore else columnName;
-                theGene.addAttribute(
-                    valueName
-                    , theVal if theType is None else util.transformType(theVal, theType)
-                );
-            for signedLogPvalMetascore in signedLogPvalMetascores:
-                metascoreName = signedLogPvalMetascore[SIGNED_LOG_PVAL_METASCORES_ATTR.SCORE_NAME];
-                pvalFoldChangePairs = signedLogPvalMetascore[SIGNED_LOG_PVAL_METASCORES_ATTR.PVAL_FOLDCHANGE_PAIRS];
-                metascore = 0;
-                for pvalFoldChangePair in pvalFoldChangePairs:
-                    pvalName = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.PVAL_NAME];
-                    fcColName = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.FC_COL_NAME];
-                    invertSign = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.INVERT_SIGN] if PVAL_FOLD_CHANGE_PAIRS_ATTR.INVERT_SIGN in pvalFoldChangePair else False;
-                    pvalIsLog = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.PVAL_IS_LOG] if PVAL_FOLD_CHANGE_PAIRS_ATTR.PVAL_IS_LOG in pvalFoldChangePair else False;
-                    fcIsLog = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.FC_IS_LOG] if PVAL_FOLD_CHANGE_PAIRS_ATTR.FC_IS_LOG in pvalFoldChangePair else True; 
-
-                    signedLogPval = theGene.getAttribute(pvalName);
-                    signedLogPval = abs(math.log(signedLogPval) if fcIsLog == False else signedLogPval);
-                    fcThreshold = 0 if fcIsLog else -1;
-                    signedLogPval = signedLogPval if theGene.getAttribute(fcColName) >= fcThreshold else -1*signedLogPval;
-                    signedLogPval = signedLogPval if invertSign == False else -1*signedLogPval;
-                    metascore += signedLogPval;
-                theGene.addAttribute(metascoreName, metascore);
+            if (fileType == "default"):
+                for valueColumnToStore in valueColumnsToStore:
+                    (theVal, valueName) = basicValueColumnExtraction(valueColumnToStore, inp); 
+                    theGene.addAttribute(valueName, theVal);
+            elif (fileType == "cuffdiff"):
+                sample1 = inp[CONFIG_ATTR.SAMPLE1COL];
+                sample2 = inp[CONFIG_ATTR.SAMPLE2COL];
+                renamings = configJson[CONFIG_ATTR.RENAMINGS] if CONFIG_ATTR.RENAMINGS in configJson else {};
+                sample1 = renamings[sample1] if sample1 in renamings else sample1;
+                sample2 = renamings[sample2] if sample2 in renamings else sample2;
+                for valueColumnToStore in valueColumnsToStore:
+                    (theVal, valueNameCore) = basicValueColumnExtraction(valueColumnToStore, inp);
+                    valueName = valueNameCore+"_"+sample1+"_"+sample2;
+                    theGene.addAttribute(
+                        valueName, theVal
+                    );
+                    flipSignOnInvert = valueColumnToStore[VALUE_COLUMNS_TO_STORE_ATTR.FLIP_SIGN_ON_INVERT] if VALUE_COLUMNS_TO_STORE_ATTR.FLIP_SIGN_ON_INVERT in valueColumnToStore else False;
+                    theVal = -1*theVal if flipSignOnInvert else theVal;
+                    valueName = valueNameCore+"_"+sample2+"_"+sample1;
+                    theGene.addAttribute(
+                        valueName, theVal
+                    );                        
+            else:
+                raise ValueError("Unrecognized fileType "+fileType); 
         
         def actionFromTitle(title):
             dictionaryFromLine = fp.lambdaMaker_dictionaryFromLine(title);
@@ -224,6 +255,38 @@ def processInput(args):
 
         fp.performActionOnEachLineOfFile(fileHandle=fp.getFileHandle(inputFile), actionFromTitle=actionFromTitle, ignoreInputTitle=True);
 
+    metascoresJson = util.parseJsonFile(args.metascoresConfig);
+    signedLogPvalMetascores = metascoresJson[METASCORES_ATTR.SIGNED_LOG_PVAL_METASCORES];
+
+    for theGene in geneDictionary.values():
+        for signedLogPvalMetascore in signedLogPvalMetascores:
+            metascoreName = signedLogPvalMetascore[SIGNED_LOG_PVAL_METASCORES_ATTR.SCORE_NAME];
+            pvalFoldChangePairs = signedLogPvalMetascore[SIGNED_LOG_PVAL_METASCORES_ATTR.PVAL_FOLDCHANGE_PAIRS];
+            metascore = 0;
+            for pvalFoldChangePair in pvalFoldChangePairs:
+                pvalName = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.PVAL_NAME];
+                fcColName = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.FC_COL_NAME];
+                invertSign = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.INVERT_SIGN] if PVAL_FOLD_CHANGE_PAIRS_ATTR.INVERT_SIGN in pvalFoldChangePair else False;
+                pvalIsLog = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.PVAL_IS_LOG] if PVAL_FOLD_CHANGE_PAIRS_ATTR.PVAL_IS_LOG in pvalFoldChangePair else False;
+                fcIsLog = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.FC_IS_LOG] if PVAL_FOLD_CHANGE_PAIRS_ATTR.FC_IS_LOG in pvalFoldChangePair else True; 
+
+                signedLogPval = theGene.getAttribute(pvalName);
+                signedLogPval = abs(math.log(zeroPvalSubstitute if signedLogPval < zeroPvalSubstitute else signedLogPval) if pvalIsLog == False else signedLogPval);
+                fcThreshold = 0 if fcIsLog else 1;
+                signedLogPval = signedLogPval if theGene.getAttribute(fcColName) >= fcThreshold else -1*signedLogPval;
+                signedLogPval = signedLogPval if invertSign == False else -1*signedLogPval;
+                metascore += signedLogPval;
+            theGene.addAttribute(metascoreName, metascore);
+
     return geneDictionary;
+
+def basicValueColumnExtraction(valueColumnToStore, inp):
+    theType = valueColumnToStore[VALUE_COLUMNS_TO_STORE_ATTR.TYPE] if VALUE_COLUMNS_TO_STORE_ATTR.TYPE in valueColumnToStore else None;
+    columnName = valueColumnToStore[VALUE_COLUMNS_TO_STORE_ATTR.COLUMN_NAME];
+    theVal = inp[columnName];
+    valueName = valueColumnToStore[VALUE_COLUMNS_TO_STORE_ATTR.VALUE_NAME] if VALUE_COLUMNS_TO_STORE_ATTR.VALUE_NAME in valueColumnToStore else columnName;    
+    theVal = theVal if theType is None else util.transformType(theVal, theType)
+
+    return (theVal, valueName); 
 
 main();

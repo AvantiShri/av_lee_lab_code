@@ -7,51 +7,51 @@
             ,"valueName": "HugoGeneId"
         }, {
             "columnName": "CP_minus_CM_log2FC"
-            ,"valueName": "logFC_CP_CM"
+            ,"valueName": "logFC_CM_CP"
             ,"type": "float"
         }, {
             "columnName": "CP_minus_CM_pvalue"
-            ,"valueName": "PValue_CP_CM"
+            ,"valueName": "PValue_CM_CP"
             ,"type": "float"
         }, {
             "columnName": "ESC_minus_CM_log2FC"
-            ,"valueName": "logFC_ESC_CM"
+            ,"valueName": "logFC_CM_ESC"
             ,"type": "float"
         }, {
             "columnName": "ESC_minus_CM_pvalue"
-            ,"valueName": "PValue_ESC_CM"
+            ,"valueName": "PValue_CM_ESC"
             ,"type": "float"
         }, {
             "columnName": "ESC_minus_CP_log2FC"
-            ,"valueName": "logFC_ESC_CP"
+            ,"valueName": "logFC_CP_ESC"
             ,"type": "float"
         }, {
             "columnName": "ESC_minus_CP_pvalue"
-            ,"valueName": "PValue_ESC_CP"
+            ,"valueName": "PValue_CP_ESC"
             ,"type": "float"
         }, {
             "columnName": "MES_minus_CM_log2FC"
-            ,"valueName": "logFC_MES_CM"
+            ,"valueName": "logFC_CM_MES"
             ,"type": "float"
         }, {
             "columnName": "MES_minus_CM_pvalue"
-            ,"valueName": "PValue_MES_CM"
+            ,"valueName": "PValue_CM_MES"
             ,"type": "float"
         }, {
             "columnName": "MES_minus_CP_log2FC"
-            ,"valueName": "logFC_MES_CP"
+            ,"valueName": "logFC_CP_MES"
             ,"type": "float"
         }, {
             "columnName": "MES_minus_CP_pvalue"
-            ,"valueName": "PValue_MES_CP"
+            ,"valueName": "PValue_CP_MES"
             ,"type": "float"
         }, {
             "columnName": "MES_minus_ESC_log2FC"
-            ,"valueName": "logFC_MES_ESC"
+            ,"valueName": "logFC_ESC_MES"
             ,"type": "float"
         }, {
             "columnName": "MES_minus_ESC_pvalue"
-            ,"valueName": "PValue_MES_ESC"
+            ,"valueName": "PValue_ESC_MES"
             ,"type": "float"
         }
     ], "signedLogPvalMetascores": [
@@ -59,28 +59,28 @@
             "scoreName": "escDiffScore"
             , "pvalFoldChangePairs": [
                 {
-                    "pvalName": "PValue_MES_ESC"
-                    ,"fcColName": "logFC_MES_ESC"
+                    "pvalName": "PValue_ESC_MES"
+                    ,"fcColName": "logFC_ESC_MES"
                     ,"invertSign": false
                 }, {
-                    "pvalName": "PValue_ESC_CP"
-                    ,"fcColName": "logFC_ESC_CP"
+                    "pvalName": "PValue_CP_ESC"
+                    ,"fcColName": "logFC_CP_ESC"
                     ,"invertSign": true
                 }, {
-                    "pvalName": "PValue_ESC_CM"
-                    ,"fcColName": "logFC_ESC_CM"
+                    "pvalName": "PValue_CM_ESC"
+                    ,"fcColName": "logFC_CM_ESC"
                     ,"invertSign": true
                 }, {
-                    "pvalName": "PValue_MES_CP"
-                    , "fcColName": "logFC_MES_CP"
+                    "pvalName": "PValue_CP_MES"
+                    , "fcColName": "logFC_CP_MES"
                     ,"invertSign": true
                 }, {
-                    "pvalName": "PValue_MES_CM"
-                    , "fcColName": "logFC_MES_CM"
+                    "pvalName": "PValue_CM_MES"
+                    , "fcColName": "logFC_CM_MES"
                     ,"invertSign": true
                 }, {
-                    "pvalName": "PValue_CP_CM"
-                    , "fcColName": "logFC_CP_CM"
+                    "pvalName": "PValue_CM_CP"
+                    , "fcColName": "logFC_CM_CP"
                     ,"invertSign": true
                 }
             ]

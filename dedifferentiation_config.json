@@ -1,5 +1,5 @@
 {
-    "inputFile": "dedifferentiationSamples_RSEM.tsv"
+    "inputFile": "dediffSamples_RSEM.tsv"
     ,"geneIdColumn":"ENSEMBLID"
     ,"valueColumnsToStore": [
         {
@@ -7,77 +7,52 @@
             ,"valueName": "HugoGeneId"
         }, {
             "columnName": "Adult_CM_24h_minus_Adult_CM_0h_log2FC"
-            ,"valueName": "logFC_24h_0h"
+            ,"valueName": "logFC_0h_24h"
             ,"type": "float"
         }, {
             "columnName": "Adult_CM_24h_minus_Adult_CM_0h_pvalue"
-            ,"valueName": "PValue_24h_0h"
+            ,"valueName": "PValue_0h_24h"
             ,"type": "float"
         }, {
             "columnName": "Adult_CM_48h_minus_Adult_CM_0h_log2FC"
-            ,"valueName": "logFC_48h_0h"
+            ,"valueName": "logFC_0h_48h"
             ,"type": "float"
         }, {
             "columnName": "Adult_CM_48h_minus_Adult_CM_0h_pvalue"
-            ,"valueName": "PValue_48h_0h"
+            ,"valueName": "PValue_0h_48h"
             ,"type": "float"
         }, {
             "columnName": "Adult_CM_48h_minus_Adult_CM_24h_log2FC"
-            ,"valueName": "logFC_48h_24h"
+            ,"valueName": "logFC_24h_48h"
             ,"type": "float"
         }, {
             "columnName": "Adult_CM_48h_minus_Adult_CM_24h_pvalue"
-            ,"valueName": "PValue_48h_24h"
+            ,"valueName": "PValue_24h_48h"
             ,"type": "float"
         }, {
             "columnName": "Adult_CM_72h_minus_Adult_CM_0h_log2FC"
-            ,"valueName": "logFC_72h_0h"
+            ,"valueName": "logFC_0h_72h"
             ,"type": "float"
         }, {
             "columnName": "Adult_CM_72h_minus_Adult_CM_0h_pvalue"
-            ,"valueName": "PValue_72h_0h"
+            ,"valueName": "PValue_0h_72h"
             ,"type": "float"
         }, {
             "columnName": "Adult_CM_72h_minus_Adult_CM_24h_log2FC"
-            ,"valueName": "logFC_72h_24h"
+            ,"valueName": "logFC_24h_72h"
             ,"type": "float"
         }, {
             "columnName": "Adult_CM_72h_minus_Adult_CM_24h_pvalue"
-            ,"valueName": "PValue_72h_24h"
+            ,"valueName": "PValue_24h_72h"
             ,"type": "float"
         }, {
             "columnName": "Adult_CM_72h_minus_Adult_CM_48h_log2FC"
-            ,"valueName": "logFC_72h_48h"
+            ,"valueName": "logFC_48h_72h"
             ,"type": "float"
         }, {
             "columnName": "Adult_CM_72h_minus_Adult_CM_48h_pvalue"
-            ,"valueName": "PValue_72h_48h"
+            ,"valueName": "PValue_48h_72h"
             ,"type": "float"
-        }
-    ], "signedLogPvalMetascores": [
-        {
-            "scoreName": "dediffScore"
-            , "pvalFoldChangePairs": [
-                {
-                    "pvalName": "PValue_24h_0h"
-                    ,"fcColName": "logFC_24h_0h"
-                }, {
-                    "pvalName": "PValue_48h_0h"
-                    ,"fcColName": "logFC_48h_0h"
-                }, {
-                    "pvalName": "PValue_72h_0h"
-                    ,"fcColName": "logFC_72h_0h"
-                }, {
-                    "pvalName": "PValue_48h_24h"
-                    , "fcColName": "logFC_48h_24h"
-                }, {
-                    "pvalName": "PValue_72h_24h"
-                    , "fcColName": "logFC_72h_24h"
-                }, {
-                    "pvalName": "PValue_72h_48h"
-                    , "fcColName": "logFC_72h_48h"
-                }
-            ]
         }
     ] 
 }

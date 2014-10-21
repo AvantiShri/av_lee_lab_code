@@ -43,11 +43,11 @@
             ,"type": "float"
         }, {
             "columnName": "logFC_D7R/D7S"
-            , "valueName": "logFC_D7R_D7S"
+            , "valueName": "logFC_D7S_D7R"
             ,"type": "float"
         }, {
             "columnName": "PValue_D7R/D7S"
-            , "valueName": "PValue_D7R_D7S"
+            , "valueName": "PValue_D7S_D7R"
             , "type": "float"
         }
     ], "signedLogPvalMetascores": [
@@ -57,35 +57,61 @@
                 {
                     "pvalName": "PValue_P0_P4"
                     ,"fcColName": "logFC_P0_P4"
-                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_P0_P7"
                     ,"fcColName": "logFC_P0_P7"
-                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_P0_Adult"
                     ,"fcColName": "logFC_P0_Adult"
-                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_P4_P7"
                     , "fcColName": "logFC_P4_P7"
-                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_P4_Adult"
                     , "fcColName": "logFC_P4_Adult"
-                    ,"invertSign": true
                 }, {
                     "pvalName": "PValue_P7_Adult"
                     , "fcColName": "logFC_P7_Adult"
-                    ,"invertSign": true
+                }
+            ]
+        }, {
+            "scoreName": "P0vsP7Score"
+            , "pvalFoldChangePairs": [
+                {
+                    "pvalName": "PValue_P0_P7"
+                    , "fcColName": "logFC_P0_P7"
+                }
+            ]
+        }, {
+            "scoreName": "P0vsAdultScore"
+            , "pvalFoldChangePairs": [
+                {
+                    "pvalName": "PValue_P0_Adult"
+                    , "fcColName": "logFC_P0_Adult"
+                }
+            ]
+        }, {
+            "scoreName": "P7vsAdultScore"
+            , "pvalFoldChangePairs": [
+                {
+                    "pvalName": "PValue_P7_Adult"
+                    , "fcColName": "logFC_P7_Adult"
                 }
             ]
         }, {
             "scoreName": "d7RvsShamScore"
             , "pvalFoldChangePairs": [
                 {
-                    "pvalName": "PValue_D7R_D7S"
-                    , "fcColName": "logFC_D7R_D7S"
+                    "pvalName": "PValue_D7S_D7R"
+                    , "fcColName": "logFC_D7S_D7R"
+                }
+            ]
+        }, {
+            "scoreName": "d7RvsShamScore"
+            , "pvalFoldChangePairs": [
+                {
+                    "pvalName": "PValue_D7S_D7R"
+                    , "fcColName": "logFC_D7S_D7R"
                 }
             ]
         } 
