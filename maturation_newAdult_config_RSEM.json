@@ -1,0 +1,36 @@
+{
+    "inputFile": "maturationSamples_newAdult_RSEM.tsv"
+    ,"geneIdColumn":"ENSID"
+    ,"valueColumnsToStore": [
+        {
+            "columnName": "GeneID"
+            ,"valueName": "HugoGeneId"
+        }, {
+            "columnName": "logFC_P0_CM_Dediff_0h"
+            ,"valueName": "logFC_P0_NewAdult"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_P0_CM_Dediff_0h"
+            ,"valueName": "PValue_P0_NewAdult"
+            ,"type": "float"
+        }, {
+            "columnName": "logFC_P4_CM_Dediff_0h"
+            ,"valueName": "logFC_P4_NewAdult"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_P4_CM_Dediff_0h"
+            ,"valueName": "PValue_P4_NewAdult"
+            ,"type": "float"
+        }, {
+            "columnName": "logFC_P7_CM_Dediff_0h"
+            ,"valueName": "logFC_P7_NewAdult"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_P7_CM_Dediff_0h"
+            ,"valueName": "PValue_P7_NewAdult"
+            ,"type": "float"
+        }
+    ]
+}
+
+

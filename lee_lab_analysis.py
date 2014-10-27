@@ -56,7 +56,8 @@ PVAL_FOLD_CHANGE_PAIRS_ATTR = util.enum(
     , FC_IS_LOG = 'fcIsLog' #default to true
 );
 SCORE_NAMES = util.enum(
-    MATURATION_SCORE = "maturationScore"
+    MATURATION_SCORE_OLDADULT = "maturationScoreOldAdult"
+    ,MATURATION_SCORE_NEWADULT = "maturationScoreNewAdult"
     ,P0P4P7_SCORE = "P0P4P7Score"
     ,P0_V_P7_SCORE = "P0vsP7Score"
     ,P0_V_ADULT_SCORE = "P0vsAdultScore"
@@ -79,7 +80,7 @@ def main():
     
     genes = processInput(args).values();
 
-    numGenesToAverage = 200;
+    numGenesToAverage = 500;
     numIterations = 10000;
 
     d7vShamSettings = Settings(SCORE_NAMES.D7_V_SHAM_SCORE, args.prefix, 
@@ -87,13 +88,13 @@ def main():
                 , Setting(reverseScoreToCompareOrder=False, greaterThanThreshold=True)]);
 
     outputFile = args.prefix+"_scores.tsv";
-    scoresToPrint = [SCORE_NAMES.D7_V_SHAM_SCORE, SCORE_NAMES.ESC_DIFF_SCORE, SCORE_NAMES.P0P4P7_SCORE, SCORE_NAMES.MATURATION_SCORE, SCORE_NAMES.DEDIFF_SCORE]
-    for score in scoresToPrint:
-        computePercentiles(genes,score);
-    util.printAttributes(genes, scoresToPrint+[x+"_perc" for x in scoresToPrint], outputFile);
+    scoresToPrint = [SCORE_NAMES.D7_V_SHAM_SCORE, SCORE_NAMES.ESC_DIFF_SCORE, SCORE_NAMES.MATURATION_SCORE_OLDADULT, SCORE_NAMES.MATURATION_SCORE_NEWADULT, SCORE_NAMES.DEDIFF_SCORE]
+    #for score in scoresToPrint:
+    #    computePercentiles(genes,score);
+    #util.printAttributes(genes, scoresToPrint+[x+"_perc" for x in scoresToPrint], outputFile);
     
-    scoresToTestWith = [SCORE_NAMES.P0P4P7_SCORE, SCORE_NAMES.MATURATION_SCORE, SCORE_NAMES.ESC_DIFF_SCORE, SCORE_NAMES.DEDIFF_SCORE];
-    scoresToTestWith =  scoresToTestWith+[x+"_perc" for x in scoresToTestWith];
+    scoresToTestWith = [SCORE_NAMES.ESC_DIFF_SCORE, SCORE_NAMES.MATURATION_SCORE_OLDADULT, SCORE_NAMES.MATURATION_SCORE_NEWADULT, SCORE_NAMES.DEDIFF_SCORE];
+    #scoresToTestWith =  scoresToTestWith+[x+"_perc" for x in scoresToTestWith];
     for scoreToTestWith in scoresToTestWith:
         compareToScore(genes, scoreToTestWith, d7vShamSettings, numGenesToAverage, numIterations);
 
@@ -117,7 +118,8 @@ class Setting(object):
         self.greaterThanThreshold = greaterThanThreshold;
 
 def compareToScore(genes, scoreToCompareTo, settings, numGenesToAverage, numIterations):
-    (genes, monteCarloDist) = filterAndMonteCarlo(genes, scoreToCompareTo, settings.scoreToCompare, numGenesToAverage, numIterations);
+    (genes, monteCarloDist) = filterAndMonteCarlo(genes,scoreToCompareTo,scoreToCompareTo,numGenesToAverage,numIterations);
+    #(genes,monteCarloDist) = filterAndMonteCarlo(genes, scoreToCompareTo, settings.scoreToCompare, numGenesToAverage, numIterations);
     #print shapiro(monteCarloDist);
     for setting in settings.settingsArr:
         score = twoScoreComparison(
@@ -152,7 +154,7 @@ def twoScoreComparison(
             , reverseScoreToCompareOrder=False
             , greaterThanThreshold=True
     ):
-    genes = filterOutZeros(genes, scoreToCompareTo);
+    #genes = filterOutZeros(genes, scoreToCompareTo);
     genes = sortByScore(genes, scoreToCompare, reverseScoreToCompareOrder);
     threshold = medianTopN(genes, scoreToCompareTo, numToAverage);
     zScore = getZscore(monteCarloDistribution,threshold);
@@ -167,6 +169,7 @@ def twoScoreComparison(
     plt.savefig(fileName+".svg");
     plt.savefig(fileName+".png");
     plt.close("all");
+    print fileName+": "+str(score.testStatistic);
     print fileName+": "+str(score);
 
 def filterOutZeros(genes, scoreName):
@@ -270,12 +273,15 @@ def processInput(args):
                 pvalIsLog = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.PVAL_IS_LOG] if PVAL_FOLD_CHANGE_PAIRS_ATTR.PVAL_IS_LOG in pvalFoldChangePair else False;
                 fcIsLog = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.FC_IS_LOG] if PVAL_FOLD_CHANGE_PAIRS_ATTR.FC_IS_LOG in pvalFoldChangePair else True; 
 
-                signedLogPval = theGene.getAttribute(pvalName);
-                signedLogPval = abs(math.log(zeroPvalSubstitute if signedLogPval < zeroPvalSubstitute else signedLogPval) if pvalIsLog == False else signedLogPval);
-                fcThreshold = 0 if fcIsLog else 1;
-                signedLogPval = signedLogPval if theGene.getAttribute(fcColName) >= fcThreshold else -1*signedLogPval;
-                signedLogPval = signedLogPval if invertSign == False else -1*signedLogPval;
-                metascore += signedLogPval;
+                if (theGene.hasAttribute(pvalName) == False):
+                    next; #skip the iteration; pval insignificant, or something.
+                else:
+                    signedLogPval = theGene.getAttribute(pvalName);
+                    signedLogPval = abs(math.log(zeroPvalSubstitute if signedLogPval < zeroPvalSubstitute else signedLogPval) if pvalIsLog == False else signedLogPval);
+                    fcThreshold = 0 if fcIsLog else 1;
+                    signedLogPval = signedLogPval if theGene.getAttribute(fcColName) >= fcThreshold else -1*signedLogPval;
+                    signedLogPval = signedLogPval if invertSign == False else -1*signedLogPval;
+                    metascore += signedLogPval;
             theGene.addAttribute(metascoreName, metascore);
 
     return geneDictionary;

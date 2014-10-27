@@ -54,37 +54,6 @@
             ,"valueName": "PValue_ESC_MES"
             ,"type": "float"
         }
-    ], "signedLogPvalMetascores": [
-        {
-            "scoreName": "escDiffScore"
-            , "pvalFoldChangePairs": [
-                {
-                    "pvalName": "PValue_ESC_MES"
-                    ,"fcColName": "logFC_ESC_MES"
-                    ,"invertSign": false
-                }, {
-                    "pvalName": "PValue_CP_ESC"
-                    ,"fcColName": "logFC_CP_ESC"
-                    ,"invertSign": true
-                }, {
-                    "pvalName": "PValue_CM_ESC"
-                    ,"fcColName": "logFC_CM_ESC"
-                    ,"invertSign": true
-                }, {
-                    "pvalName": "PValue_CP_MES"
-                    , "fcColName": "logFC_CP_MES"
-                    ,"invertSign": true
-                }, {
-                    "pvalName": "PValue_CM_MES"
-                    , "fcColName": "logFC_CM_MES"
-                    ,"invertSign": true
-                }, {
-                    "pvalName": "PValue_CM_CP"
-                    , "fcColName": "logFC_CM_CP"
-                    ,"invertSign": true
-                }
-            ]
-        }
     ] 
 }
 
