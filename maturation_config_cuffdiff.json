@@ -1,0 +1,32 @@
+{
+    "inputFile": "maturationSamples_cuffdiff.tsv"
+    ,"fileType":"cuffdiff"
+    ,"geneIdColumn":"test_id"
+    ,"sample1Col":"sample_1"
+    ,"sample2Col":"sample_2"
+    ,"renamings": {
+        "Neonatal_CM_P0": "P0"
+        ,"Neonatal_CM_P4": "P4"
+        ,"Neonatal_CM_P7": "P7"
+        ,"Neonatal_CM_Adult": "Adult"
+        ,"D7_post_res_S": "D7S"
+        ,"D7_post_res_R": "D7R" 
+    }
+    ,"valueColumnsToStore": [
+        {
+            "columnName": "gene"
+            ,"valueName": "HugoGeneId"
+        }, {
+            "columnName": "log2(fold_change)"
+            ,"valueName": "logFC"
+            ,"type": "float"
+            ,"flipSignOnInvert":true
+        }, {
+            "columnName": "p_value"
+            ,"valueName": "PValue"
+            ,"type": "float"
+        }
+    ]
+}
+
+

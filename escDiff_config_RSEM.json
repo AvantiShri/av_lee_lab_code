@@ -1,0 +1,60 @@
+{
+    "inputFile": "escDiffSamples_RSEM.tsv"
+    ,"geneIdColumn":"ENSEMBLID"
+    ,"valueColumnsToStore": [
+        {
+            "columnName": "GeneID"
+            ,"valueName": "HugoGeneId"
+        }, {
+            "columnName": "CP_minus_CM_log2FC"
+            ,"valueName": "logFC_CM_CP"
+            ,"type": "float"
+        }, {
+            "columnName": "CP_minus_CM_pvalue"
+            ,"valueName": "PValue_CM_CP"
+            ,"type": "float"
+        }, {
+            "columnName": "ESC_minus_CM_log2FC"
+            ,"valueName": "logFC_CM_ESC"
+            ,"type": "float"
+        }, {
+            "columnName": "ESC_minus_CM_pvalue"
+            ,"valueName": "PValue_CM_ESC"
+            ,"type": "float"
+        }, {
+            "columnName": "ESC_minus_CP_log2FC"
+            ,"valueName": "logFC_CP_ESC"
+            ,"type": "float"
+        }, {
+            "columnName": "ESC_minus_CP_pvalue"
+            ,"valueName": "PValue_CP_ESC"
+            ,"type": "float"
+        }, {
+            "columnName": "MES_minus_CM_log2FC"
+            ,"valueName": "logFC_CM_MES"
+            ,"type": "float"
+        }, {
+            "columnName": "MES_minus_CM_pvalue"
+            ,"valueName": "PValue_CM_MES"
+            ,"type": "float"
+        }, {
+            "columnName": "MES_minus_CP_log2FC"
+            ,"valueName": "logFC_CP_MES"
+            ,"type": "float"
+        }, {
+            "columnName": "MES_minus_CP_pvalue"
+            ,"valueName": "PValue_CP_MES"
+            ,"type": "float"
+        }, {
+            "columnName": "MES_minus_ESC_log2FC"
+            ,"valueName": "logFC_ESC_MES"
+            ,"type": "float"
+        }, {
+            "columnName": "MES_minus_ESC_pvalue"
+            ,"valueName": "PValue_ESC_MES"
+            ,"type": "float"
+        }
+    ] 
+}
+
+

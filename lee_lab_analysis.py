@@ -57,11 +57,14 @@ PVAL_FOLD_CHANGE_PAIRS_ATTR = util.enum(
 );
 SCORE_NAMES = util.enum(
     MATURATION_SCORE_OLDADULT = "maturationScoreOldAdult"
-    ,MATURATION_SCORE_NEWADULT = "maturationScoreNewAdult"
-    ,P0P4P7_SCORE = "P0P4P7Score"
+    #,MATURATION_SCORE_NEWADULT = "maturationScoreNewAdult"
+    #,MATURATION_SCORE_NEWADULT_NOP7 = "maturationScoreNewAdultNoP7"
+    #,P0P4P7_SCORE = "P0P4P7Score"
     ,P0_V_P7_SCORE = "P0vsP7Score"
     ,P0_V_ADULT_SCORE = "P0vsAdultScore"
     ,P7_V_ADULT_SCORE = "P7vsAdultScore"
+    ,P0_V_NEWADULT_SCORE = "P0vsNewAdultScore"
+    #,P7_V_NEWADULT_SCORE = "P7vsNewAdultScore"
     ,D7_V_SHAM_SCORE = "d7RvsShamScore"
     ,DEDIFF_SCORE = "dediffScore"
     ,ESC_DIFF_SCORE = "escDiffScore"
@@ -70,6 +73,7 @@ SCORE_NAMES = util.enum(
 );
 
 zeroPvalSubstitute = 10**-250;
+print "zero pval sub: "+str(zeroPvalSubstitute);
 
 def main():
     parser = argparse.ArgumentParser(description="read in the lee lab files in preparation for statistical tests");
@@ -81,19 +85,21 @@ def main():
     genes = processInput(args).values();
 
     numGenesToAverage = 500;
+    print "num genes to avg: "+str(numGenesToAverage);
     numIterations = 10000;
+    print "num iterations: "+str(numIterations);
 
     d7vShamSettings = Settings(SCORE_NAMES.D7_V_SHAM_SCORE, args.prefix, 
                 [Setting(reverseScoreToCompareOrder=True, greaterThanThreshold=False)
                 , Setting(reverseScoreToCompareOrder=False, greaterThanThreshold=True)]);
 
     outputFile = args.prefix+"_scores.tsv";
-    scoresToPrint = [SCORE_NAMES.D7_V_SHAM_SCORE, SCORE_NAMES.ESC_DIFF_SCORE, SCORE_NAMES.MATURATION_SCORE_OLDADULT, SCORE_NAMES.MATURATION_SCORE_NEWADULT, SCORE_NAMES.DEDIFF_SCORE]
+    scoresToPrint = [SCORE_NAMES.D7_V_SHAM_SCORE, SCORE_NAMES.ESC_DIFF_SCORE, SCORE_NAMES.MATURATION_SCORE_OLDADULT, SCORE_NAMES.DEDIFF_SCORE]
     #for score in scoresToPrint:
     #    computePercentiles(genes,score);
     #util.printAttributes(genes, scoresToPrint+[x+"_perc" for x in scoresToPrint], outputFile);
     
-    scoresToTestWith = [SCORE_NAMES.ESC_DIFF_SCORE, SCORE_NAMES.MATURATION_SCORE_OLDADULT, SCORE_NAMES.MATURATION_SCORE_NEWADULT, SCORE_NAMES.DEDIFF_SCORE];
+    scoresToTestWith = [SCORE_NAMES.ESC_DIFF_SCORE, SCORE_NAMES.MATURATION_SCORE_OLDADULT, SCORE_NAMES.P0_V_NEWADULT_SCORE, SCORE_NAMES.DEDIFF_SCORE];
     #scoresToTestWith =  scoresToTestWith+[x+"_perc" for x in scoresToTestWith];
     for scoreToTestWith in scoresToTestWith:
         compareToScore(genes, scoreToTestWith, d7vShamSettings, numGenesToAverage, numIterations);
@@ -169,8 +175,8 @@ def twoScoreComparison(
     plt.savefig(fileName+".svg");
     plt.savefig(fileName+".png");
     plt.close("all");
-    print fileName+": "+str(score.testStatistic);
-    print fileName+": "+str(score);
+    print fileName+": "+str(score.testStatistic), "pval: "+str(score.pval);
+    #print fileName+": "+str(score);
 
 def filterOutZeros(genes, scoreName):
     return [x for x in genes if x.getAttribute(scoreName) != 0];
@@ -264,25 +270,26 @@ def processInput(args):
     for theGene in geneDictionary.values():
         for signedLogPvalMetascore in signedLogPvalMetascores:
             metascoreName = signedLogPvalMetascore[SIGNED_LOG_PVAL_METASCORES_ATTR.SCORE_NAME];
-            pvalFoldChangePairs = signedLogPvalMetascore[SIGNED_LOG_PVAL_METASCORES_ATTR.PVAL_FOLDCHANGE_PAIRS];
-            metascore = 0;
-            for pvalFoldChangePair in pvalFoldChangePairs:
-                pvalName = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.PVAL_NAME];
-                fcColName = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.FC_COL_NAME];
-                invertSign = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.INVERT_SIGN] if PVAL_FOLD_CHANGE_PAIRS_ATTR.INVERT_SIGN in pvalFoldChangePair else False;
-                pvalIsLog = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.PVAL_IS_LOG] if PVAL_FOLD_CHANGE_PAIRS_ATTR.PVAL_IS_LOG in pvalFoldChangePair else False;
-                fcIsLog = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.FC_IS_LOG] if PVAL_FOLD_CHANGE_PAIRS_ATTR.FC_IS_LOG in pvalFoldChangePair else True; 
+            if (metascoreName in SCORE_NAMES.vals):
+                pvalFoldChangePairs = signedLogPvalMetascore[SIGNED_LOG_PVAL_METASCORES_ATTR.PVAL_FOLDCHANGE_PAIRS];
+                metascore = 0;
+                for pvalFoldChangePair in pvalFoldChangePairs:
+                    pvalName = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.PVAL_NAME];
+                    fcColName = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.FC_COL_NAME];
+                    invertSign = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.INVERT_SIGN] if PVAL_FOLD_CHANGE_PAIRS_ATTR.INVERT_SIGN in pvalFoldChangePair else False;
+                    pvalIsLog = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.PVAL_IS_LOG] if PVAL_FOLD_CHANGE_PAIRS_ATTR.PVAL_IS_LOG in pvalFoldChangePair else False;
+                    fcIsLog = pvalFoldChangePair[PVAL_FOLD_CHANGE_PAIRS_ATTR.FC_IS_LOG] if PVAL_FOLD_CHANGE_PAIRS_ATTR.FC_IS_LOG in pvalFoldChangePair else True; 
 
-                if (theGene.hasAttribute(pvalName) == False):
-                    next; #skip the iteration; pval insignificant, or something.
-                else:
+                    #if (theGene.hasAttribute(pvalName) == False):
+                    #    next; #skip the iteration; pval insignificant, or something.
+                    #else:
                     signedLogPval = theGene.getAttribute(pvalName);
                     signedLogPval = abs(math.log(zeroPvalSubstitute if signedLogPval < zeroPvalSubstitute else signedLogPval) if pvalIsLog == False else signedLogPval);
                     fcThreshold = 0 if fcIsLog else 1;
                     signedLogPval = signedLogPval if theGene.getAttribute(fcColName) >= fcThreshold else -1*signedLogPval;
                     signedLogPval = signedLogPval if invertSign == False else -1*signedLogPval;
                     metascore += signedLogPval;
-            theGene.addAttribute(metascoreName, metascore);
+                theGene.addAttribute(metascoreName, metascore);
 
     return geneDictionary;
 

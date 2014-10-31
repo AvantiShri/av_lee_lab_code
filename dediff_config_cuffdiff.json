@@ -1,0 +1,30 @@
+{
+    "inputFile": "dediffSamples_cuffdiff.tsv"
+    ,"fileType":"cuffdiff"
+    ,"geneIdColumn":"test_id"
+    ,"sample1Col":"sample_1"
+    ,"sample2Col":"sample_2"
+    ,"renamings": {
+        "x0h_dediff": "0h"
+        ,"x24h_dediff": "24h"
+        ,"x48h_dediff": "48h"
+        ,"x72h_dediff": "72h"
+    }
+    ,"valueColumnsToStore": [
+        {
+            "columnName": "gene"
+            ,"valueName": "HugoGeneId"
+        }, {
+            "columnName": "log2(fold_change)"
+            ,"valueName": "logFC"
+            ,"type": "float"
+            ,"flipSignOnInvert":true
+        }, {
+            "columnName": "p_value"
+            ,"valueName": "PValue"
+            ,"type": "float"
+        }
+    ]
+}
+
+

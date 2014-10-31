@@ -1,0 +1,56 @@
+{
+    "inputFile": "maturationSamples_RSEM.tsv"
+    ,"geneIdColumn":"ENSID"
+    ,"valueColumnsToStore": [
+        {
+            "columnName": "GeneID"
+            ,"valueName": "HugoGeneId"
+        }, {
+            "columnName": "logFC_P0_P4"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_P0_P4"
+            ,"type": "float"
+        }, {
+            "columnName": "logFC_P0_P7"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_P0_P7"
+            ,"type": "float"
+        }, {
+            "columnName": "logFC_P0_Adult"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_P0_Adult"
+            ,"type": "float"
+        }, {
+            "columnName": "logFC_P4_P7"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_P4_P7"
+            ,"type": "float"
+        }, {
+            "columnName": "logFC_P4_Adult"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_P4_Adult"
+            ,"type": "float"
+        }, {
+            "columnName": "logFC_P7_Adult"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_P7_Adult"
+            ,"type": "float"
+        }, {
+            "columnName": "logFC_D7R/D7S"
+            , "valueName": "logFC_D7S_D7R"
+            ,"type": "float"
+        }, {
+            "columnName": "PValue_D7R/D7S"
+            , "valueName": "PValue_D7S_D7R"
+            , "type": "float"
+        }
+    ] 
+}
+
+
