@@ -77,53 +77,53 @@
             "scoreName": "maturationScoreNewAdult"
             , "pvalFoldChangePairs": [
                 {
-                    "pvalName": "PValue_P0_P4"
-                    ,"fcColName": "logFC_P0_P4"
+                    "pvalName": "PValue_P0newAdult_P4newAdult"
+                    ,"fcColName": "logFC_P0newAdult_P4newAdult"
                 }, {
-                    "pvalName": "PValue_P0_P7"
-                    ,"fcColName": "logFC_P0_P7"
+                    "pvalName": "PValue_P0newAdult_P7newAdult"
+                    ,"fcColName": "logFC_P0newAdult_P7newAdult"
                 }, {
-                    "pvalName": "PValue_P0_NewAdult"
-                    ,"fcColName": "logFC_P0_NewAdult"
+                    "pvalName": "PValue_P0newAdult_NewAdult"
+                    ,"fcColName": "logFC_P0newAdult_NewAdult"
                 }, {
-                    "pvalName": "PValue_P4_P7"
-                    , "fcColName": "logFC_P4_P7"
+                    "pvalName": "PValue_P4newAdult_P7newAdult"
+                    , "fcColName": "logFC_P4newAdult_P7newAdult"
                 }, {
-                    "pvalName": "PValue_P4_NewAdult"
-                    , "fcColName": "logFC_P4_NewAdult"
+                    "pvalName": "PValue_P4newAdult_NewAdult"
+                    , "fcColName": "logFC_P4newAdult_NewAdult"
                 }, {
-                    "pvalName": "PValue_P7_NewAdult"
-                    , "fcColName": "logFC_P7_NewAdult"
+                    "pvalName": "PValue_P7newAdult_NewAdult"
+                    , "fcColName": "logFC_P7newAdult_NewAdult"
                 }
             ]
         }, {
             "scoreName": "maturationScoreNewAdultNoP7"
             , "pvalFoldChangePairs": [
                 {
-                    "pvalName": "PValue_P0_P4"
-                    ,"fcColName": "logFC_P0_P4"
+                    "pvalName": "PValue_P0newAdult_P4newAdult"
+                    ,"fcColName": "logFC_P0newAdult_P4newAdult"
                 }, {
-                    "pvalName": "PValue_P0_NewAdult"
-                    ,"fcColName": "logFC_P0_NewAdult"
+                    "pvalName": "PValue_P0newAdult_NewAdult"
+                    ,"fcColName": "logFC_P0newAdult_NewAdult"
                 }, {
-                    "pvalName": "PValue_P4_NewAdult"
-                    , "fcColName": "logFC_P4_NewAdult"
+                    "pvalName": "PValue_P4newAdult_NewAdult"
+                    , "fcColName": "logFC_P4newAdult_NewAdult"
                 }
             ]
         }, {
             "scoreName": "P0vsNewAdultScore"
             , "pvalFoldChangePairs": [
                 {
-                    "pvalName": "PValue_P0_NewAdult"
-                    ,"fcColName": "logFC_P0_NewAdult"
+                    "pvalName": "PValue_P0newAdult_NewAdult"
+                    ,"fcColName": "logFC_P0newAdult_NewAdult"
                 }
             ]
         }, {
             "scoreName": "P7vsNewAdultScore"
             , "pvalFoldChangePairs": [
                 {
-                    "pvalName": "PValue_P7_NewAdult"
-                    ,"fcColName": "logFC_P7_NewAdult"
+                    "pvalName": "PValue_P7newAdult_NewAdult"
+                    ,"fcColName": "logFC_P7newAdult_NewAdult"
                 }
             ]
         }, {

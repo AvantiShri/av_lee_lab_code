@@ -5,12 +5,10 @@
     ,"sample1Col":"sample_1"
     ,"sample2Col":"sample_2"
     ,"renamings": {
-        "JNeonatal_CM_P0": "P0"
-        ,"JNeonatal_CM_P4": "P4"
-        ,"JNeonatal_CM_P7": "P7"
-        ,"JNeonatal_CM_Adult": "NewAdult"
-        ,"D7_post_res_S": "D7S"
-        ,"D7_post_res_R": "D7R" 
+        "WNeonatal_CM_P0": "P0newAdult"
+        ,"WNeonatal_CM_P4": "P4newAdult"
+        ,"WNeonatal_CM_P7": "P7newAdult"
+        ,"WNeonatal_CM_Adult": "NewAdult"
     }
     ,"valueColumnsToStore": [
         {

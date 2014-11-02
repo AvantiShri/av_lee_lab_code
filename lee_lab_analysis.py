@@ -57,13 +57,13 @@ PVAL_FOLD_CHANGE_PAIRS_ATTR = util.enum(
 );
 SCORE_NAMES = util.enum(
     MATURATION_SCORE_OLDADULT = "maturationScoreOldAdult"
-    #,MATURATION_SCORE_NEWADULT = "maturationScoreNewAdult"
+    ,MATURATION_SCORE_NEWADULT = "maturationScoreNewAdult"
     #,MATURATION_SCORE_NEWADULT_NOP7 = "maturationScoreNewAdultNoP7"
     #,P0P4P7_SCORE = "P0P4P7Score"
-    ,P0_V_P7_SCORE = "P0vsP7Score"
-    ,P0_V_ADULT_SCORE = "P0vsAdultScore"
-    ,P7_V_ADULT_SCORE = "P7vsAdultScore"
-    ,P0_V_NEWADULT_SCORE = "P0vsNewAdultScore"
+    #,P0_V_P7_SCORE = "P0vsP7Score"
+    #,P0_V_ADULT_SCORE = "P0vsAdultScore"
+    #,P7_V_ADULT_SCORE = "P7vsAdultScore"
+    #,P0_V_NEWADULT_SCORE = "P0vsNewAdultScore"
     #,P7_V_NEWADULT_SCORE = "P7vsNewAdultScore"
     ,D7_V_SHAM_SCORE = "d7RvsShamScore"
     ,DEDIFF_SCORE = "dediffScore"
@@ -99,7 +99,7 @@ def main():
     #    computePercentiles(genes,score);
     #util.printAttributes(genes, scoresToPrint+[x+"_perc" for x in scoresToPrint], outputFile);
     
-    scoresToTestWith = [SCORE_NAMES.ESC_DIFF_SCORE, SCORE_NAMES.MATURATION_SCORE_OLDADULT, SCORE_NAMES.P0_V_NEWADULT_SCORE, SCORE_NAMES.DEDIFF_SCORE];
+    scoresToTestWith = [SCORE_NAMES.ESC_DIFF_SCORE, SCORE_NAMES.MATURATION_SCORE_OLDADULT, SCORE_NAMES.MATURATION_SCORE_NEWADULT, SCORE_NAMES.DEDIFF_SCORE];
     #scoresToTestWith =  scoresToTestWith+[x+"_perc" for x in scoresToTestWith];
     for scoreToTestWith in scoresToTestWith:
         compareToScore(genes, scoreToTestWith, d7vShamSettings, numGenesToAverage, numIterations);
